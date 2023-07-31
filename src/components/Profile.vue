@@ -1,9 +1,7 @@
 <template>
+<div>
   <v-col class="ml-2">
-    <v-sheet
-      min-height="70vh"
-      rounded="lg"
-      >
+    <v-sheet rounded="lg" width="120vh">
       <v-container>
           <v-card>
               <v-card-title>
@@ -19,39 +17,42 @@
                             <v-col sm="4" class="py-1">
                                 <h4 >First name</h4>
                             </v-col>
-                            <v-col v-if="user" class="py-1"> {{user.firstName}}</v-col>
+                            <v-col v-if="user" class="py-1 text-body-1"> {{user.firstName}}</v-col>
                         </v-row>
                         <v-row >
                             <v-col sm="4" class="py-1" >
                                 <h4 >Last name</h4>
                             </v-col>
-                            <v-col v-if="user" class="py-1"> {{user.lastName}}</v-col> 
+                            <v-col v-if="user" class="py-1 text-body-1"> {{user.lastName}}</v-col> 
                         </v-row>
                         <v-row>
                             <v-col sm="4" class="py-1">
                                 <h4 >Username</h4>
                             </v-col>
-                            <v-col v-if="user" class="py-1"> {{user.username}}</v-col>
+                            <v-col v-if="user" class="py-1 text-body-1"> {{user.username}}</v-col>
                         </v-row>
                             <v-row>
                             <v-col sm="4" class="py-1">
                                 <h4 >Birthday</h4>
                             </v-col>
-                            <v-col v-if="user" class="py-1">{{user.birthday}}</v-col>
+                            <v-col v-if="user" class="py-1 text-body-1">{{user.birthday}}</v-col>
+                            <span class="pb-2 pr-10">
+                                <v-icon>mdi-cake-variant</v-icon>
+                            </span>
+                            
                         </v-row>
                         </v-col>
                         <v-col
-                        class="pa-0"
+                        class="pl-15 pt-0"
                         cols="12"
                         sm="4"
                         >
           <v-avatar
-            class="profile"
-            color="grey"
-            size="164"
+            size="180"
             tile
-          >
-            <v-img src="../assets/default-profile-image.png"></v-img>
+            v-if="user.imageName"
+          >               
+              <v-img :src="require(`@/assets/${ user.imageName }`)"></v-img>
           </v-avatar>
         </v-col>
         
@@ -62,40 +63,49 @@
               </v-card-text>
           </v-card>
           <div v-if="showEditForm">
-          <EditProfile />
+          <EditProfile :user="user" />
           </div>
       </v-container>
     </v-sheet>
+    
   </v-col>
+ 
+   <!-- <v-col class="ml-2"> 
+       <v-sheet rounded="lg" max-width="100vh">
+      <v-container>
+          
+      </v-container>
+    </v-sheet> 
+    </v-col>-->
+    <UserPost :userId="`${user.id}`"/>
+   
+  
+</div>
 </template>
 
 <script>
-import EditProfile from './EditProfile'
-import axios from 'axios'
+import EditProfile from './EditProfile.vue'
+import UserPost from './UserPost.vue'
+//import axios from 'axios'
 export default {
-    name: 'UserProfile',
+    name: 'Profile',
     data() {
         return {
             showEditForm: false,
-            user: null
+           // user: null
         }
     },
     components: {
-        EditProfile
+        EditProfile,
+        UserPost
     },
-    async created() {
-        const response = await axios.get('http://localhost:9000/user', {
-            headers: {
-                Authorization: 'Bearer ' + localStorage.getItem('token')
-            }
-        })
+    props: {
+        user: Object
+    },
+ /*   async created() {
+        const response = await axios.get('user')
         this.user = response.data
-    }
-   /* methods: {
-        showEditForm() {
-            this.showEditForm = !this.showEditForm
-
-        }
+        //console.log("imageName:" + this.user.imageName);
     }*/
 }
 </script>

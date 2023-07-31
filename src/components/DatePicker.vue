@@ -45,6 +45,8 @@
     },
     methods: {
       save (date) {
+        //console.log(date);
+        this.$emit('date-picked', date)
         this.$refs.menu.save(date)
       },
     },

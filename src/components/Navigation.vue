@@ -5,22 +5,23 @@
       flat
       class="nav-bar"
     >
-      <v-container class="py-0 fill-height">
+      <v-container class="py-0 mr-4 fill-height">
         <v-avatar
           class="mr-10"
           color="grey darken-1"
           size="32"
         >
-        <img src="../assets/default-profile-image.png">
+        <img :src="require(`@/assets/${user.imageName}`)">
         </v-avatar>
 
         <v-btn
           v-for="link in links"
           :key="link.name"
           text
-          :to="`${link.route}`"
+          :to="{ name: `${link.name}`, params: {user: user}}"
         >
-          {{ link.name }}
+          <div v-if="link.name === 'NewsFeed'">News feed</div>
+          <div v-else>{{ link.name }}</div>
         </v-btn>
 
         <v-spacer></v-spacer>
@@ -37,33 +38,59 @@
           >
           </v-text-field>
         </v-responsive>
-        
       </v-container>
-      <v-icon style="cursor: pointer;">{{ mdiLogout }}</v-icon>
+      <v-tooltip bottom>
+      <template v-slot:activator="{ on, attrs }">
+        <v-icon
+          v-bind="attrs"
+          v-on="on"
+          @click="logout"
+          class="pr-6 pl-0"
+        >
+         {{ mdiLogout }}
+        </v-icon>
+      </template>
+      <span>Logout</span>
+    </v-tooltip>
+    
     </v-app-bar>
 </template>
 
 <script>
 import { mdiLogout } from '@mdi/js';
+import axios from 'axios'
   export default {
     name: 'Navigation',
     data() {
       return {
         links: [
-          {name: 'News feed', route:'/news'},
+          {name: 'NewsFeed', route:'/news'},
           {name: 'Friends', route: '/friends'},
           {name: 'Profile', route: '/profile'}
         ],
-        mdiLogout
+        user: null,
+        mdiLogout,
+        searchOn: false
       }
     },
-    //methods: 
-      //logout()
+    async created() {
+        const response = await axios.get('user')
+        this.user = response.data
+        //console.log(this.user);
+    },
+   // @click="logout"
+    methods: {
+      logout() {
+        localStorage.removeItem('token')
+        this.$router.push('/')
+      }
+    }
+    //style="cursor: pointer;"
     
   }
 </script>
 <style>
 .nav-bar {
-  background-image: linear-gradient(to top,#eeeeee 0,#3f3f3f 100%)
+  background-image: linear-gradient(to top,#f3f4f7 0,#c8cbd8 100%)
 }
 </style>

@@ -1,10 +1,8 @@
 <template>
   <v-dialog
-    persistent
     max-width="600px"
     v-model="dialog"
-    @keydown.esc="dialog = false"
-    @submit="onSubmit">
+    >
     <template v-slot:activator="{ on, attrs }"
     class="mt-4">
         <v-btn
@@ -20,7 +18,7 @@
       <v-card-title>
         <h2>Register</h2>
       </v-card-title>
-      <!--
+      <!--    @submit.prevent="onSubmit"
       <v-card-text>
         <v-form class="px-3">
           <v-text-field v-model="title" label="Title" prepend-icon="mdi-folder"></v-text-field>
@@ -72,7 +70,7 @@
                 cols="12"
                 sm="6"
               >
-                <DatePicker />
+                <DatePicker @date-picked="datePicked"/>
               </v-col>
               
             </v-row>
@@ -92,9 +90,27 @@
           <v-btn
             color="grey darken-1"
             text
-            @click="onSubmit"
+            @click.prevent="onSubmit(); snackbar = true"
           > Register
           </v-btn>
+          <v-snackbar v-if="text"
+      v-model="snackbar"
+      
+    >
+      {{ text }}
+
+      <template v-slot:action="{ attrs }">
+        <v-btn
+          color="white"
+          text
+          v-bind="attrs"
+          class="pr-2"
+          @click="snackbar = false; dialog = false"
+        >
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
         </v-card-actions>
       </v-card>
    
@@ -117,22 +133,30 @@ export default {
       password: '',
       date: '',
       dialog: false,
+      snackbar: false,
+      text: '',
+      timeout: 2000,
     }
   },
   methods: {
-    ...mapActions(['addUser']),
-    onSubmit(e) {
-      console.log(this.firstName, this.lastName)
-      e.preventDefault()
-      const user = {
+    //...mapActions(['addUser']),
+    datePicked(date) {
+      this.date = date
+    },
+    async onSubmit() {
+      //console.log(this.firstName, this.lastName, this.date)
+      const response = await axios.post('user', {
           firstName: this.firstName,
           lastName: this.lastName,
           username: this.username,
           password: this.password,
-         // birthday: this.date
-      }
-      this.addUser(user)
-     // this.$router.push('/home')
+          birthday: this.date
+      })
+      this.text = response.data.message
+      //this.dialog = false
+      //console.log(response.data);
+      //this.addUser(user)
+      //this.$router.push('/') // redirect to login route
     }
   }
 }

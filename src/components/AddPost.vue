@@ -1,5 +1,10 @@
 <template>
-    <v-sheet rounded="lg" class="mb-4">
+    <v-sheet rounded="lg" class="mb-4" max-width="120vh">
+        <v-container class="pb-1">
+        <v-card-title class="pb-1">
+        Welcome, {{user.firstName}}!
+      </v-card-title>
+        </v-container>
         <v-container>
             <v-col>
                 <form @submit.prevent="onSubmit">
@@ -32,27 +37,31 @@ export default ({
     data() {
         return {
             content: '',
-            user: null
+            user: null,
+            //clearClicked: false
         }
     },
     methods: { 
         ...mapActions(['addPost']),
         onSubmit(e) {
             console.log(this.content);
+            if (this.content.length === 0) {
+                alert("Are you sure you want to submit empty post?")
+            }
             e.preventDefault()
             const post = {
                 content: this.content,
                 userId: this.user.id
             }
             this.addPost(post)
-        }
+            this.content = ''
+        },
+       /* clear () {
+            this.clearClicked = true
+        }*/
     },
     async created() {
-        const response = await axios.get('http://localhost:9000/user', {
-            headers: {
-                Authorization: 'Bearer ' + localStorage.getItem('token')
-            }
-        })
+        const response = await axios.get('user')
         this.user = response.data
     }
 })

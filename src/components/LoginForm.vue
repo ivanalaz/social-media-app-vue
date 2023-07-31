@@ -78,12 +78,13 @@ import axios from 'axios'
         this.$refs.form.validate()
       },*/
       async handleSubmit () {
-        const response = await axios.post('http://localhost:9000/', {
+        const response = await axios.post('login', {
           username: this.username,
           password: this.password
         })
+        console.log(response.data);
         localStorage.setItem('token', response.data)
-        this.$router.push({ name: 'NewsFeed', query: { redirect: '/news' } })
+        this.$router.push({ name: 'NewsFeed' })
       }
     }
   }
@@ -120,11 +121,11 @@ import axios from 'axios'
 }
 a.router-link-exact{
   color: black;
-}
+}/*
 body {
   background-image: url("../assets/background2.jpg");
   background-attachment: fixed;
   background-position: center;
   background-size: cover;
-}
+}*/
 </style>

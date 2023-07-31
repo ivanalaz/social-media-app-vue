@@ -1,12 +1,11 @@
 <template>
 <div>
   <router-view />
-  
 </div>
 </template>
 
 <script>
-  import LoginForm from "./components/LoginForm";
+  import LoginForm from "./components/LoginForm.vue";
   import Home from "./views/Home.vue"
   export default {
     components: {
@@ -17,7 +16,6 @@
 </script>
 
 <style>
-
 body {
   background-image: url("./assets/background2.jpg");
   background-attachment: fixed;
